@@ -22,7 +22,7 @@ def create_dest_path(date):
     elif date.day == dt_now.day and date.month == dt_now.month and date.year == dt_now.year: #DAY
         return base_path / "Day"
     else:
-        return base_path / "DELETE"
+        return "DELETE"
 
 def sort_files_by_date(source_dir):
     if not source_dir.exists():
@@ -34,6 +34,9 @@ def sort_files_by_date(source_dir):
         if file.is_file():
             mod_time = datetime.fromtimestamp(file.stat().st_mtime)
             target_folder = create_dest_path(mod_time)
+            if target_folder == "DELETE":
+                os.remove(file)
+                return
             target_folder.mkdir(parents=True, exist_ok=True)
 
             shutil.move(str(file), target_folder / file.name)
